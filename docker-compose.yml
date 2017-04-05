@@ -1,0 +1,17 @@
+traefik:
+  image: traefik
+  command: --web --docker --docker.domain=docker.localhost --logLevel=DEBUG
+  ports:
+    - "80:80"
+    - "8080:8080"
+    - "443:443"
+  volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    - ./traefik-config/traefik.toml:/traefik.toml
+    - ./acme.json:/acme.json
+
+machine:
+  image: katacoda/docker-http-server
+  labels:
+    - "traefik.backend=machine-echo"
+    - "traefik.frontend.rule=Host:hello.hirsch.io"
